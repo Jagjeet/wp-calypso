@@ -1,23 +1,12 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { isNullish } from '@automattic/js-utils';
 
 const TemplateSelectorItem = ( props ) => {
-	const {
-		id,
-		value,
-		onSelect,
-		title,
-		description,
-		theme,
-		locale,
-		templatePostID = null,
-		isSelected,
-	} = props;
+	const { value, onSelect, title, description, theme, locale, templatePostID = null } = props;
 
-	if ( isNullish( id ) || isNullish( title ) || isNullish( value ) ) {
+	if ( isNullish( title ) || isNullish( value ) ) {
 		return null;
 	}
 
@@ -32,9 +21,7 @@ const TemplateSelectorItem = ( props ) => {
 	) }`;
 
 	const staticPreviewImg =
-		'blank' === value
-			? null
-			: mshotsUrl + encodeURIComponent( previewUrl ) + '?vpw=1024&vph=1024&w=500&h=500';
+		mshotsUrl + encodeURIComponent( previewUrl ) + '?vpw=1024&vph=1024&w=500&h=500';
 
 	const refreshSourceImg = ( e ) => {
 		const img = e.target;
@@ -48,28 +35,21 @@ const TemplateSelectorItem = ( props ) => {
 		}, 10000 );
 	};
 
-	const innerPreview =
-		'blank' === value ? null : (
-			<img
-				className="template-selector-item__media"
-				src={ staticPreviewImg }
-				alt={ title }
-				onLoad={ refreshSourceImg }
-			/>
-		);
-
-	const handleClick = () => {
-		onSelect( value );
-	};
+	const innerPreview = (
+		<img
+			className="template-selector-item__media"
+			src={ staticPreviewImg }
+			alt={ title }
+			onLoad={ refreshSourceImg }
+		/>
+	);
 
 	return (
 		<button
 			type="button"
-			className={ classnames( 'template-selector-item__label', {
-				'is-selected': isSelected,
-			} ) }
+			className="template-selector-item__label"
 			value={ value }
-			onClick={ handleClick }
+			onClick={ () => onSelect( value ) }
 			aria-label={ description }
 		>
 			<span className="template-selector-item__preview-wrap">{ innerPreview }</span>
