@@ -17,6 +17,25 @@ export function isGoogleWorkspace( product ) {
 	return isGoogleWorkspaceProductSlug( product.product_slug );
 }
 
+/**
+ * Determines whether the provided Google Workspace product is for a user purchasing extra licenses (versus a new account).
+ *
+ * @param {object} product - product object
+ * @returns {boolean} - true if this product is for extra licenses, false otherwise
+ */
+export function isGoogleWorkspaceExtraLicence( product ) {
+	product = formatProduct( product );
+	assertValidProduct( product );
+
+	if ( ! isGoogleWorkspaceProductSlug( product.product_slug ) ) {
+		return false;
+	}
+
+	// Checks if that property exists has it should only be available for extra licenses
+	return product?.extra?.new_quantity !== undefined;
+}
+
+
 export function isGSuite( product ) {
 	product = formatProduct( product );
 	assertValidProduct( product );

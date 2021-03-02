@@ -40,6 +40,7 @@ export { isFreeTrial } from './is-free-trial';
 export { isFreeWordPressComDomain } from './is-free-wordpress-com-domain';
 export {
 	isGoogleWorkspace,
+	isGoogleWorkspaceExtraLicence,
 	isGSuite,
 	isGSuiteOrExtraLicense,
 	isGSuiteOrExtraLicenseOrGoogleWorkspace,
