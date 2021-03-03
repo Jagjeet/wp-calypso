@@ -38,6 +38,7 @@ import StatsController from './app/store-stats/controller';
 import StoreSidebar from './store-sidebar';
 import { tracksStore, bumpStat } from './lib/analytics';
 import { makeLayout, render as clientRender } from 'calypso/controller';
+import { getSelectedSiteWithFallback, getSiteOption } from 'calypso/state/sites/selectors';
 
 /**
  * Style dependencies
@@ -232,6 +233,7 @@ function addStorePage( storePage, storeNavigation ) {
 	page(
 		storePage.path,
 		siteSelection,
+		redirectIfWooCommerceNotInstalled,
 		storeNavigation,
 		( context, next ) => {
 			const component = React.createElement( storePage.container, { params: context.params } );
@@ -278,18 +280,38 @@ function addTracksContext( context, next ) {
 	next();
 }
 
+function redirectIfWooCommerceNotInstalled( context, next ) {
+	const state = context.store.getState();
+	const site = getSelectedSiteWithFallback( state );
+	const siteId = site ? site.ID : null;
+	const isSiteWpcomStore = getSiteOption( state, siteId, 'is_wpcom_store' );
+
+	if ( ! isSiteWpcomStore ) {
+		return page.redirect( `/woocommerce-installation/${ site.slug }` );
+	}
+
+	next();
+}
+
 export default async function ( _, addReducer ) {
 	await addReducer( [ 'extensions', 'woocommerce' ], reducer );
 	installActionHandlers();
 
-	page( '/store', siteSelection, sites, makeLayout, clientRender );
+	page(
+		'/store',
+		siteSelection,
+		redirectIfWooCommerceNotInstalled,
+		sites,
+		makeLayout,
+		clientRender
+	);
 
 	// Add pages that use the store navigation
 	getStorePages().forEach( function ( storePage ) {
 		if ( config.isEnabled( storePage.configKey ) ) {
 			// Store deprecation would redirect most store pages to dashboard
 			if ( ! ( '/store/:site' === storePage.path ) ) {
-				page( storePage.path, addTracksContext, ( context ) => {
+				page( storePage.path, redirectIfWooCommerceNotInstalled, addTracksContext, ( context ) => {
 					context.store.dispatch( bumpStat( 'calypso_store_post_sunset', storePage.statName ) );
 					page.redirect( `/store/${ context.params.site }?${ context.querystring }` );
 				} );
@@ -305,6 +327,7 @@ export default async function ( _, addReducer ) {
 	page(
 		'/store/stats/:type/:unit',
 		siteSelection,
+		redirectIfWooCommerceNotInstalled,
 		sites,
 		addTracksContext,
 		makeLayout,
@@ -313,6 +336,7 @@ export default async function ( _, addReducer ) {
 	page(
 		'/store/stats/:type/:unit/:site',
 		siteSelection,
+		redirectIfWooCommerceNotInstalled,
 		navigation,
 		addTracksContext,
 		StatsController,
