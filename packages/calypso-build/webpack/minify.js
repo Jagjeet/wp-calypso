@@ -6,7 +6,9 @@ const browserslist = require( 'browserslist' );
 const babelPlugins = require( '@babel/compat-data/plugins' );
 const semver = require( 'semver' );
 
-const supportedBrowsers = browserslist( null, { env: process.env.BROWSERSLIST_ENV || 'defaults' } );
+const supportedBrowsers = browserslist( null, {
+	env: process.env.BROWSERSLIST_ENV || 'production',
+} );
 
 // The list of browsers to check, that are supported by babel compat-data.
 // Babel compat-data also includes non-browser environments, which we want to exclude.
@@ -112,9 +114,7 @@ module.exports = ( options ) => {
 	terserOptions = {
 		ecma: chooseTerserEcmaVersion( supportedBrowsers ),
 		ie8: false,
-		safari10: supportedBrowsers.some(
-			( browser ) => browser.includes( 'safari 10' ) || browser.includes( 'ios_saf 10' )
-		),
+		safari10: false,
 		...terserOptions,
 	};
 
