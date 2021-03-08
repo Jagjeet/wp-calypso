@@ -4,7 +4,7 @@ exports[`webpack-inline-constant-exports-plugin should produce expected output: 
 "(window[\\"webpackChunk\\"] = window[\\"webpackChunk\\"] || []).push([[\\"main\\"],{
 
 /***/ \\"./index.js\\":
-/***/ (function() {
+/***/ (() => {
 
 \\"use strict\\";
 
@@ -15,7 +15,7 @@ exports[`webpack-inline-constant-exports-plugin should produce expected output: 
  */
 const BLOGGER = 'BLOGGER_PLAN';
 const PREMIUM = 'PREMIUM_PLAN';
-/* harmony default export */ var plans = ([ BLOGGER, PREMIUM ]);
+/* harmony default export */ const plans = ([ BLOGGER, PREMIUM ]);
 
 ;// CONCATENATED MODULE: ./paths.js
 /*
